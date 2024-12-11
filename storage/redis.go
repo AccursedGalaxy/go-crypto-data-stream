@@ -48,7 +48,16 @@ func (rc *RedisClient) StoreOrderBook(ctx context.Context, symbol string, orderb
 	if err != nil {
 		return err
 	}
-	return rc.client.Set(ctx, key, data, 0).Err()
+	return rc.client.Set(ctx, key, data, 5*time.Second).Err()
+}
+
+func (rc *RedisClient) StoreBookTicker(ctx context.Context, symbol string, bookTicker interface{}) error {
+	key := fmt.Sprintf("bookticker:%s", symbol)
+	data, err := json.Marshal(bookTicker)
+	if err != nil {
+		return err
+	}
+	return rc.client.Set(ctx, key, data, 1*time.Second).Err()
 }
 
 func (rc *RedisClient) storeWithLimit(ctx context.Context, key string, value interface{}, limitKey string) error {
@@ -57,9 +66,17 @@ func (rc *RedisClient) storeWithLimit(ctx context.Context, key string, value int
 		return err
 	}
 
+	// Get the limit from config or use default
+	limit := int64(999)
+	if limitKey == "kline_max_items" {
+		limit = 999  // Use config value here if needed
+	} else if limitKey == "trades_max_items" {
+		limit = 4999 // Use config value here if needed
+	}
+
 	pipe := rc.client.Pipeline()
 	pipe.LPush(ctx, key, data)
-	pipe.LTrim(ctx, key, 0, 999) // Default limit of 1000 items
+	pipe.LTrim(ctx, key, 0, limit)
 	_, err = pipe.Exec(ctx)
 	return err
 }

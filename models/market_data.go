@@ -29,16 +29,25 @@ type Kline struct {
 
 // Trade represents a single trade
 type Trade struct {
-	EventType string    `json:"e"`
-	EventTime time.Time `json:"E"`
-	Symbol    string    `json:"s"`
-	TradeID   int64     `json:"a"`
-	Price     string    `json:"p"`
-	Quantity  string    `json:"q"`
-	FirstID   int64     `json:"f"`
-	LastID    int64     `json:"l"`
-	TradeTime time.Time `json:"T"`
-	IsMaker   bool      `json:"m"`
+	EventType string `json:"e"`
+	EventTime int64  `json:"E"`
+	Symbol    string `json:"s"`
+	TradeID   int64  `json:"a"`
+	Price     string `json:"p"`
+	Quantity  string `json:"q"`
+	FirstID   int64  `json:"f"`
+	LastID    int64  `json:"l"`
+	TradeTime int64  `json:"T"`
+	IsMaker   bool   `json:"m"`
+}
+
+// Add helper methods to get time.Time
+func (t *Trade) GetEventTime() time.Time {
+	return time.Unix(0, t.EventTime*int64(time.Millisecond))
+}
+
+func (t *Trade) GetTradeTime() time.Time {
+	return time.Unix(0, t.TradeTime*int64(time.Millisecond))
 }
 
 // OrderBookLevel represents a single price level in the order book

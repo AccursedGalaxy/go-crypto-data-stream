@@ -69,8 +69,7 @@ func main() {
 		if err := json.Unmarshal(data, &bookTicker); err != nil {
 			return err
 		}
-		// You might want to update the storage method for book tickers
-		return nil
+		return redisClient.StoreBookTicker(ctx, bookTicker.Symbol, bookTicker)
 	})
 
 	wsClient.RegisterHandler("depth20", func(data []byte) error {
