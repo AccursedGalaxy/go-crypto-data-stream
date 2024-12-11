@@ -1,0 +1,17 @@
+{
+    "redis": {
+        "host": "localhost",
+        "port": 6379,
+        "password": "",
+        "db": 0
+    },
+    "binance": {
+        "base_ws_url": "wss://fstream.binance.com",
+        "symbols": ["btcusdt"]
+    },
+    "data_retention": {
+        "kline_max_items": 1000,
+        "trades_max_items": 5000,
+        "orderbook_max_size": 1000
+    }
+}
